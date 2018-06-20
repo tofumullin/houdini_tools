@@ -285,6 +285,8 @@ class Ui_MainWindow(object):
             self.btn_next.setEnabled(1)
             self.btn_exTxt.setEnabled(1)
 
+            print(files)
+
     def appendfiles(self):
         self.oldfiles = self.tableWidget.nextFilterItem()[0]
         self.tableWidget.isGridView = self.tableWidget.nextFilterItem()[2]
@@ -501,14 +503,21 @@ class TableWidget(QTableWidget):
                     item = self.item(i,j)
                     if item: 
                         if item.checkState() == Qt.Checked: self.getItem(item)
+        
         elif action == Open:
+            for i in select:
+                item = self.item(i.row(),i.column())
+                if item:
+                    viewer = ImageView()
+                    # file = 'D:/HLJ/PALACE/render/mantra_cloud_rig/column.test.v8.mantra_cloud_rig._wedge_amount_824.899096_scale_4.266350_turbulence_0.211616_seed_22.jpg'
+                    viewer.initUI()
+                    # print(item.icon())
+                    viewer.exec_()
 
-            print('43')
         elif action == Detail:
-            
-            print('4t3')
+            print(self.pictures.printList())
         else:
-            return
+            pass
 
 class FileNameToWedge():
     def __init__(self,filelist,template=0):
@@ -580,6 +589,23 @@ class FileNameToWedge():
             self.table.append('\n')
         return ''.join(self.table)
 
+class ImageView(QWidget):
+    def initUI(self):
+        self.setWindowTitle('PyQt5 Image Viewer')
+        # self.left = 100
+        # self.top = 100
+        # self.width = 640
+        # self.height = 480
+        # self.setGeometry(self.left, self.top, self.width, self.height)
+        file ='D:/BaiduYun/wedge_filter/render/wedge_test.mantra1._wedge_translatey_0.009441_translatex_-0.030150_scaley_0.678395_scalex_0.673039.0001.jpg'
+
+        pixmap = QPixmap(file)
+        pixmap = pixmap.scaledToHeight(200)
+        label = QLabel(self)
+        label.setPixmap(pixmap)
+        self.resize(pixmap.width(),pixmap.height())
+        self.show()
+
 if __name__ == "__main__":
     import sys
     app = QApplication.instance()
@@ -590,3 +616,11 @@ if __name__ == "__main__":
     ui.setupUi(MainWindow)
     MainWindow.show()
     sys.exit(app.exec_())
+
+
+   
+    # ui = ImageView()
+    # ui.initUI()
+    # sys.exit(app.exec_())
+
+# D:/HLJ/PALACE/render/mantra_cloud_rig/column.test.v8.mantra_cloud_rig._wedge_amount_824.899096_scale_4.266350_turbulence_0.211616_seed_22.jpg
