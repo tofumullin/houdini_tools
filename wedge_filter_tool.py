@@ -3,14 +3,12 @@
 from PySide2.QtCore import *
 from PySide2.QtGui import *
 from PySide2.QtWidgets import *
-# import string
 
-class Ui_MainWindow(QMainWindow):
+class Ui_MainWindow(QWidget):
     def __init__(self, parent=None):
         super(Ui_MainWindow, self).__init__(parent)
-        
 
-    def setupUi(self, MainWindow):
+    def setupUi(self,MainWindow=None):
         MainWindow.setObjectName("MainWindow")
         MainWindow.resize(900, 700)
 
@@ -101,9 +99,9 @@ class Ui_MainWindow(QMainWindow):
         self.btn_exTxt = QPushButton(self.centralwidget)
         self.btn_exTxt.setObjectName("btn_exTxt")
         self.horizontalLayout_3.addWidget(self.btn_exTxt)
-        self.btn_quit = QPushButton(self.centralwidget)
-        self.btn_quit.setObjectName("btn_quit")
-        self.horizontalLayout_3.addWidget(self.btn_quit)
+        # self.btn_quit = QPushButton(self.centralwidget)
+        # self.btn_quit.setObjectName("btn_quit")
+        # self.horizontalLayout_3.addWidget(self.btn_quit)
         self.gridLayout.addLayout(self.horizontalLayout_3, 4, 0, 1, 5)
         self.line = QFrame(self.centralwidget)
         self.line.setFrameShape(QFrame.HLine)
@@ -111,11 +109,7 @@ class Ui_MainWindow(QMainWindow):
         self.line.setObjectName("line")
         self.gridLayout.addWidget(self.line, 3, 0, 1, 5)
         MainWindow.setCentralWidget(self.centralwidget)
-        self.menubar = QMenuBar()
-        self.menubar.setGeometry(QRect(0, 0, 917, 22))
-        self.menubar.setObjectName("menubar")
-
-        MainWindow.setMenuBar(self.menubar)
+        
         self.statusbar = QStatusBar(MainWindow)
         self.statusbar.setObjectName("statusbar")
         MainWindow.setStatusBar(self.statusbar)
@@ -128,7 +122,7 @@ class Ui_MainWindow(QMainWindow):
         MainWindow.setTabOrder(self.btn_next, self.edit_node)
         MainWindow.setTabOrder(self.edit_node, self.btn_node)
         MainWindow.setTabOrder(self.btn_node, self.btn_exNode)
-        MainWindow.setTabOrder(self.btn_exNode, self.btn_quit)
+        # MainWindow.setTabOrder(self.btn_exNode, self.btn_quit)
 
         # initial widgets
         self.btn_language.toggle()
@@ -141,16 +135,15 @@ class Ui_MainWindow(QMainWindow):
         self.comboBox_sort.addItems(['$HIPNAME.$OS.$WEDGE.$F.exr','$HIPNAME.$OS.$WEDGE.exr'])
         self.edit_node.setText('/out/wedge1')
         self.statusbar.showMessage('Ready')
-        # self.statusbar.showMessage('Add some files')
 
         # connect the functions
-        
         self.btn_listView.clicked.connect(self.clickListView)
         self.btn_gridView.clicked.connect(self.clickGridView)
         
         self.comboBox_sort.currentIndexChanged.connect(self.templateChange)
 
-        self.btn_node.clicked.connect(lambda:self.clickAddPicture(self.btn_addPic))
+        # self.btn_node.clicked.connect(lambda:self.clickAddPicture(self.btn_addPic))
+        self.btn_node.clicked.connect(self.selectWedgeNode)
         self.btn_exNode.clicked.connect(self.msgwarning)
         self.slider_view.sliderMoved.connect(self.sliderval)
         self.btn_language.clicked.connect(self.changeLanguage)
@@ -162,19 +155,9 @@ class Ui_MainWindow(QMainWindow):
         
         self.btn_back.clicked.connect(self.backfilter)
         self.btn_next.clicked.connect(self.nextfilter)
-        # self.tableWidget.clicked(self.msgwarning)
-        # self.btn_quit.clicked.connect(self.close_application)
-        QObject.connect(self.btn_quit, SIGNAL("clicked()"), app, SLOT("quit()"))
+        # QObject.connect(self.btn_quit, SIGNAL("clicked()"), app, SLOT("quit()"))
         self.btn_back.setEnabled(0)
-        # self.btn_listView.setEnabled(0)
-        # self.btn_gridView.setEnabled(0)
-        # self.slider_view.setEnabled(0)
-        # self.btn_appPic.setEnabled(0)
         
-        # self.btn_exTxt.setEnabled(0)
-
-        # self.btn_next.setEnabled(0)
-
         self.btn_exNode.setEnabled(1)
         
     #display UI in English
@@ -191,7 +174,7 @@ class Ui_MainWindow(QMainWindow):
         self.label.setText(QApplication.translate("MainWindow", "wedge node", None, -1))
         self.btn_node.setText(QApplication.translate("MainWindow", "...", None, -1))
         self.btn_exNode.setText(QApplication.translate("MainWindow", "Export to Nodes", None, -1))
-        self.btn_quit.setText(QApplication.translate("MainWindow", "QUIT", None, -1))
+        # self.btn_quit.setText(QApplication.translate("MainWindow", "QUIT", None, -1))
         self.btn_exTxt.setText(QApplication.translate("MainWindow", "Export to TXT", None, -1))
         self.btn_convertHelp.setText(QApplication.translate("MainWindow", "Convert Help", None, -1))
 
@@ -209,7 +192,7 @@ class Ui_MainWindow(QMainWindow):
         self.label.setText(QApplication.translate("MainWindow", "wedge节点", None, -1))
         self.btn_node.setText(QApplication.translate("MainWindow", "...", None, -1))
         self.btn_exNode.setText(QApplication.translate("MainWindow", "导出到节点", None, -1))
-        self.btn_quit.setText(QApplication.translate("MainWindow", "退出", None, -1))
+        # self.btn_quit.setText(QApplication.translate("MainWindow", "退出", None, -1))
         self.btn_exTxt.setText(QApplication.translate("MainWindow", "导出TXT", None, -1))
         self.btn_convertHelp.setText(QApplication.translate("MainWindow", "格式转换命令", None, -1))
 
@@ -277,23 +260,10 @@ class Ui_MainWindow(QMainWindow):
                                     "Select one or more files to open",
                                     "/home",
                                     "Images (*.png *.xpm *.jpg *.jpeg)")
-        # files = [u'/Users/mullin/Downloads/wedge_filter/render/wedge_test.mantra1._wedge_translatey_-0.009130_translatex_-0.101018_scaley_0.825796_scalex_0.894362.0001.jpg', u'/Users/mullin/Downloads/wedge_filter/render/wedge_test.mantra1._wedge_translatey_-0.124225_translatex_-0.008376_scaley_0.616542_scalex_0.615433.0001.jpg', u'/Users/mullin/Downloads/wedge_filter/render/wedge_test.mantra1._wedge_translatey_-0.210204_translatex_0.151692_scaley_0.660623_scalex_0.815474.0001.jpg', u'/Users/mullin/Downloads/wedge_filter/render/wedge_test.mantra1._wedge_translatey_-0.212801_translatex_-0.659302_scaley_0.751119_scalex_0.991038.0001.jpg', u'/Users/mullin/Downloads/wedge_filter/render/wedge_test.mantra1._wedge_translatey_-0.250594_translatex_-0.122077_scaley_0.754213_scalex_0.889221.0001.jpg', u'/Users/mullin/Downloads/wedge_filter/render/wedge_test.mantra1._wedge_translatey_-0.387227_translatex_0.717029_scaley_0.655182_scalex_0.969644.0001.jpg', u'/Users/mullin/Downloads/wedge_filter/render/wedge_test.mantra1._wedge_translatey_-0.461441_translatex_0.095993_scaley_0.978558_scalex_0.502855.0001.jpg', u'/Users/mullin/Downloads/wedge_filter/render/wedge_test.mantra1._wedge_translatey_-0.489412_translatex_0.683490_scaley_0.836557_scalex_0.541617.0001.jpg', u'/Users/mullin/Downloads/wedge_filter/render/wedge_test.mantra1._wedge_translatey_-0.542476_translatex_0.890541_scaley_0.950714_scalex_0.515295.0001.jpg', u'/Users/mullin/Downloads/wedge_filter/render/wedge_test.mantra1._wedge_translatey_-0.562438_translatex_-0.080793_scaley_0.644891_scalex_0.510745.0001.jpg', u'/Users/mullin/Downloads/wedge_filter/render/wedge_test.mantra1._wedge_translatey_-0.566801_translatex_-0.155767_scaley_0.514520_scalex_0.610846.0001.jpg', u'/Users/mullin/Downloads/wedge_filter/render/wedge_test.mantra1._wedge_translatey_-0.588476_translatex_0.348306_scaley_0.716475_scalex_0.597059.0001.jpg', u'/Users/mullin/Downloads/wedge_filter/render/wedge_test.mantra1._wedge_translatey_-0.653985_translatex_0.097598_scaley_0.851520_scalex_0.837243.0001.jpg', u'/Users/mullin/Downloads/wedge_filter/render/wedge_test.mantra1._wedge_translatey_-0.680749_translatex_0.054761_scaley_0.584072_scalex_0.636457.0001.jpg', u'/Users/mullin/Downloads/wedge_filter/render/wedge_test.mantra1._wedge_translatey_-0.707077_translatex_0.437671_scaley_0.580114_scalex_0.852303.0001.jpg', u'/Users/mullin/Downloads/wedge_filter/render/wedge_test.mantra1._wedge_translatey_-0.731272_translatex_0.694867_scaley_0.881887_scalex_0.627535.0001.jpg', u'/Users/mullin/Downloads/wedge_filter/render/wedge_test.mantra1._wedge_translatey_-0.781023_translatex_0.249604_scaley_0.672211_scalex_0.534758.0001.jpg', u'/Users/mullin/Downloads/wedge_filter/render/wedge_test.mantra1._wedge_translatey_-0.782477_translatex_0.799637_scaley_0.755058_scalex_0.604545.0001.jpg', u'/Users/mullin/Downloads/wedge_filter/render/wedge_test.mantra1._wedge_translatey_-0.791152_translatex_0.331915_scaley_0.648036_scalex_0.749900.0001.jpg', u'/Users/mullin/Downloads/wedge_filter/render/wedge_test.mantra1._wedge_translatey_-0.812281_translatex_-0.943305_scaley_0.917883_scalex_0.716384.0001.jpg', u'/Users/mullin/Downloads/wedge_filter/render/wedge_test.mantra1._wedge_translatey_-0.882430_translatex_-0.402788_scaley_0.983952_scalex_0.937767.0001.jpg', u'/Users/mullin/Downloads/wedge_filter/render/wedge_test.mantra1._wedge_translatey_-0.887753_translatex_0.740020_scaley_0.785000_scalex_0.599920.0001.jpg', u'/Users/mullin/Downloads/wedge_filter/render/wedge_test.mantra1._wedge_translatey_-0.913025_translatex_0.406764_scaley_0.991594_scalex_0.796592.0001.jpg', u'/Users/mullin/Downloads/wedge_filter/render/wedge_test.mantra1._wedge_translatey_-0.930948_translatex_-0.514520_scaley_0.898702_scalex_0.707157.0001.jpg', u'/Users/mullin/Downloads/wedge_filter/render/wedge_test.mantra1._wedge_translatey_-0.944050_translatex_-0.540790_scaley_0.588606_scalex_0.792230.0001.jpg', u'/Users/mullin/Downloads/wedge_filter/render/wedge_test.mantra1._wedge_translatey_-0.949108_translatex_0.082825_scaley_0.969575_scalex_0.690602.0001.jpg', u'/Users/mullin/Downloads/wedge_filter/render/wedge_test.mantra1._wedge_translatey_-0.952731_translatex_-0.226886_scaley_0.710459_scalex_0.594020.0001.jpg', u'/Users/mullin/Downloads/wedge_filter/render/wedge_test.mantra1._wedge_translatey_-0.966619_translatex_-0.970880_scaley_0.877793_scalex_0.624780.0001.jpg', u'/Users/mullin/Downloads/wedge_filter/render/wedge_test.mantra1._wedge_translatey_0.009441_translatex_-0.030150_scaley_0.678395_scalex_0.673039.0001.jpg', u'/Users/mullin/Downloads/wedge_filter/render/wedge_test.mantra1._wedge_translatey_0.027543_translatex_0.904935_scaley_0.788897_scalex_0.729566.0001.jpg', u'/Users/mullin/Downloads/wedge_filter/render/wedge_test.mantra1._wedge_translatey_0.041877_translatex_-0.213490_scaley_0.744847_scalex_0.514787.0001.jpg', u'/Users/mullin/Downloads/wedge_filter/render/wedge_test.mantra1._wedge_translatey_0.076958_translatex_0.246979_scaley_0.806226_scalex_0.729073.0001.jpg', u'/Users/mullin/Downloads/wedge_filter/render/wedge_test.mantra1._wedge_translatey_0.140561_translatex_-0.656966_scaley_0.933891_scalex_0.986888.0001.jpg', u'/Users/mullin/Downloads/wedge_filter/render/wedge_test.mantra1._wedge_translatey_0.211297_translatex_0.634079_scaley_0.510409_scalex_0.508932.0001.jpg', u'/Users/mullin/Downloads/wedge_filter/render/wedge_test.mantra1._wedge_translatey_0.356352_translatex_0.089404_scaley_0.610300_scalex_0.987797.0001.jpg', u'/Users/mullin/Downloads/wedge_filter/render/wedge_test.mantra1._wedge_translatey_0.408046_translatex_0.017747_scaley_0.688984_scalex_0.673465.0001.jpg', u'/Users/mullin/Downloads/wedge_filter/render/wedge_test.mantra1._wedge_translatey_0.423180_translatex_-0.090597_scaley_0.661001_scalex_0.736886.0001.jpg', u'/Users/mullin/Downloads/wedge_filter/render/wedge_test.mantra1._wedge_translatey_0.442969_translatex_0.422384_scaley_0.968220_scalex_0.711053.0001.jpg', u'/Users/mullin/Downloads/wedge_filter/render/wedge_test.mantra1._wedge_translatey_0.487684_translatex_-0.167655_scaley_0.626179_scalex_0.504240.0001.jpg', u'/Users/mullin/Downloads/wedge_filter/render/wedge_test.mantra1._wedge_translatey_0.524560_translatex_-0.995788_scaley_0.722694_scalex_0.860770.0001.jpg', u'/Users/mullin/Downloads/wedge_filter/render/wedge_test.mantra1._wedge_translatey_0.541046_translatex_0.079235_scaley_0.930145_scalex_0.616088.0001.jpg', u'/Users/mullin/Downloads/wedge_filter/render/wedge_test.mantra1._wedge_translatey_0.567310_translatex_0.640972_scaley_0.943090_scalex_0.870252.0001.jpg', u'/Users/mullin/Downloads/wedge_filter/render/wedge_test.mantra1._wedge_translatey_0.595622_translatex_0.033199_scaley_0.611598_scalex_0.824253.0001.jpg', u'/Users/mullin/Downloads/wedge_filter/render/wedge_test.mantra1._wedge_translatey_0.618280_translatex_0.037357_scaley_0.780679_scalex_0.713045.0001.jpg', u'/Users/mullin/Downloads/wedge_filter/render/wedge_test.mantra1._wedge_translatey_0.660071_translatex_0.340611_scaley_0.651684_scalex_0.793790.0001.jpg', u'/Users/mullin/Downloads/wedge_filter/render/wedge_test.mantra1._wedge_translatey_0.675156_translatex_0.112909_scaley_0.821147_scalex_0.592953.0001.jpg', u'/Users/mullin/Downloads/wedge_filter/render/wedge_test.mantra1._wedge_translatey_0.722018_translatex_0.596878_scaley_0.898549_scalex_0.908219.0001.jpg', u'/Users/mullin/Downloads/wedge_filter/render/wedge_test.mantra1._wedge_translatey_0.757436_translatex_-0.924167_scaley_0.909707_scalex_0.981101.0001.jpg', u'/Users/mullin/Downloads/wedge_filter/render/wedge_test.mantra1._wedge_translatey_0.764958_translatex_0.692395_scaley_0.752642_scalex_0.794501.0001.jpg', u'/Users/mullin/Downloads/wedge_filter/render/wedge_test.mantra1._wedge_translatey_0.985087_translatex_0.719893_scaley_0.560445_scalex_0.666348.0001.jpg']
-        # ok =1
         if ok:
             self.tableWidget.clear()
             self.tableWidget.initUI(files,self.comboBox_sort.currentIndex())
             self.tableWidget.listview()
-            
-            # self.btn_listView.setEnabled(1)
-            # self.btn_gridView.setEnabled(1)
-            # self.comboBox_sort.setEnabled(1)
-            # self.slider_view.setEnabled(1)
-            # self.btn_appPic.setEnabled(1)
-            # self.btn_next.setEnabled(1)
-            # self.btn_exTxt.setEnabled(1)
-
-            # self.statusbar.showMessage('Ready')
-
 
     def appendfiles(self):
         self.oldfiles = self.tableWidget.nextFilterItem()[0]
@@ -314,28 +284,31 @@ class Ui_MainWindow(QMainWindow):
             else : self.tableWidget.listview()
 
     def msgwarning(self):
-        msgBox = QMessageBox()
+        msgBox = QMessageBox(self.btn_exNode)
         msgBox.setIcon(QMessageBox.Warning)
         # QMessageBox.Warning,,QMessageBox.Critical,,QMessageBox.Question
-        msgBox.setText("It will modify your houdini project file.")
-        msgBox.setInformativeText("Do you want to export the wedge to houdini takes?")
-        msgBox.setStandardButtons(QMessageBox.Ok | QMessageBox.Cancel)
-        msgBox.setDefaultButton(QMessageBox.Ok)
+        msgBox.setText("Do you want to clean the takes named wedges and add new takes.")
+        msgBox.setInformativeText("yes for cleaning  the exist wedge takes, \nno  for just adding takes but no cleaning?")
+        msgBox.setStandardButtons(QMessageBox.Yes | QMessageBox.No | QMessageBox.Cancel)
+        msgBox.setDefaultButton(QMessageBox.Yes)
         ret = msgBox.exec_()
-        if ret == QMessageBox.Ok:
+        if ret == QMessageBox.Yes:
+            self.destroyTakes()
+            self.exportTakes()
+        elif ret == QMessageBox.No:
             self.exportTakes()
         else: pass
 
     def savetxt(self):
-        txtfile, ok = QFileDialog.getSaveFileName()
-        if 1:
+        txtfile, _ = QFileDialog.getSaveFileName()
+        if txtfile:
             text_file = open(txtfile, "w")
             text_file.write(self.tableWidget.printList())
             text_file.close()
         
 
     def convertHelp(self):
-        msgBox = QMessageBox() 
+        msgBox = QMessageBox(self.btn_convertHelp) 
         msgBox.setIcon(QMessageBox.Question)
         # QMessageBox.Warning,,QMessageBox.Critical,,QMessageBox.Question
         msgBox.setText("iconvert in commandLine (exr -> jpg)")
@@ -354,41 +327,41 @@ class Ui_MainWindow(QMainWindow):
         msgBox.setDefaultButton(QMessageBox.Ok)
         ret = msgBox.exec_()
 
+    def selectWedgeNode(self):
+        wedgeNode = hou.ui.selectNode(initial_node=hou.node("/out/wedge1"),node_type_filter=hou.nodeTypeFilter.Rop)
+        self.edit_node.setText(wedgeNode)
 
-    # def dragEnterEvent(self, event):
-    #     # if event.mimeData().hasUrls():
-    #     event.accept()
-    #     # else:
-    #         # event.ignore()
-
-    # def dropEvent(self, event):
-    #     files = [(u.toLocalFile()) for u in event.mimeData().urls()]
-    #     for f in files:
-    #         print ('deh8hhgiftyfr')
-
+    def destroyTakes(self):
+        for take  in (hou.takes.rootTake().children()):
+            if 'wedge' in take.name():take.destroy()
 
     def exportTakes(self):
+        node_path = '/out/wedge1' 
+        wedge_node = hou.node(node_path)
+        wedge = self.tableWidget.pictures.wedgeList()
+        
         for i in range(len(self.tableWidget.pictures)):
+            takeName = 'wedge' + str(i+1)
+
+            curTake = hou.takes.rootTake()
+            takeName = curTake.addChildTake(takeName)
+            hou.takes.setCurrentTake(takeName)
+
             for j in range(self.tableWidget.pictures.wedgeAmount()):
-                print (self.tableWidget.pictures.wedgeVal(i,j))
+                name = 'name' + str(j+1)
+                parm = wedge_node.parm(name).eval()
+                for n in range(len(wedge)):
+                    print wedge[n]
+                    if wedge[n] == parm: 
+                        chan = 'chan' + str(j+1)
+                        path = wedge_node.parm(chan).eval()
+                        modifiedParm = hou.parm(path)
+                        takeName.addParmTuple(modifiedParm.tuple())
+                        modifiedParm.set(self.tableWidget.pictures.wedgeVal(i,j))
+                        print path
+                        print (self.tableWidget.pictures.wedgeVal(i,j))
 
-
-
-# wedge = ['translatey','translatex','scaley','scalex'] 
-
-# val = [0.009441, -0.030150, 0.678395, 0.673039]    
-# node_path = '/out/wedge1' 
-# wedge_node = hou.node(node_path)
-# for i in range(len(wedge)):
-#     name = 'name' + str(i+1)
-#     print name
-#     parm = wedge_node.parm(name).eval()
-#     for n in range(len(wedge)): 
-#         print wedge[n]
-#         if wedge[n] == parm: 
-#             chan = 'chan' + str(i+1)
-#             path = wedge_node.parm(chan).eval()
-#             print path
+            hou.takes.setCurrentTake(hou.takes.rootTake())            
 
 
 #TABLE VIEWER DEFINE
@@ -415,10 +388,7 @@ class TableWidget(QTableWidget):
         self.setgrid(1, 1)
         self.setShowGrid(False)
         self.setEditTriggers(0)
-        # self.itemDoubleClicked.connect(self.getItem)
         self.itemClicked.connect(self.getItem)
-        # self.clicked.connect(self.getItem)
-        # self.doubleClicked.connect(self.getItem)
 
         self.setContextMenuPolicy(Qt.CustomContextMenu)######允许右键产生子菜单
         self.customContextMenuRequested.connect(self.generateMenu)   ####右键菜单
@@ -660,19 +630,7 @@ class ImageView(QMainWindow):
     def initUI(self,pixmap):
         
         self.label = QLabel(self)
-        # area = QScrollArea(self)
-        # area.setWidget(self.label)
-        # layout = QVBoxLayout()
-        # layout.addWidget(area)
-        # self.setLayout(layout)
-
-        # self.setGeometry(self.left, self.top, self.width, self.height)
-        # file ='D:/BaiduYun/wedge_filter/render/wedge_test.mantra1._wedge_translatey_0.009441_translatex_-0.030150_scaley_0.678395_scalex_0.673039.0001.jpg'
-        # file = '/Users/mullin/Downloads/wedge_filter/render/wedge_test.mantra1._wedge_translatey_-0.387227_translatex_0.717029_scaley_0.655182_scalex_0.969644.0001.jpg'
-        # pixmap = self.pixmap
-        # pixmap = QPixmap(file)
-        # pixmap = self.pixmap.scaledToHeight(100)
-        
+      
         self.label.setPixmap(pixmap)
         
         self.label.resize(pixmap.width(), pixmap.height())
@@ -684,10 +642,14 @@ if __name__ == "__main__":
     import sys
     app = QApplication.instance()
     if app is None:
-        app = QApplication([])
-    MainWindow = QMainWindow()
-    ui = Ui_MainWindow()
+        app = QApplication(['houdini'])
+    cursor_pos = QCursor().pos()
+    parent = app.topLevelAt(cursor_pos)
+        
+    MainWindow = QMainWindow(parent)
+    ui = Ui_MainWindow(parent)
     ui.setupUi(MainWindow)
+    ui.setWindowFlags(Qt.Window)
     MainWindow.show()
     sys.exit(app.exec_())
 
