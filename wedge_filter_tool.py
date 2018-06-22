@@ -332,36 +332,45 @@ class Ui_MainWindow(QWidget):
         self.edit_node.setText(wedgeNode)
 
     def destroyTakes(self):
-        for take  in (hou.takes.rootTake().children()):
+        for take  in (hou.takes.findTake('Main').children()):
             if 'wedge' in take.name():take.destroy()
 
     def exportTakes(self):
-        node_path = '/out/wedge1' 
+        node_path = self.edit_node.text() 
         wedge_node = hou.node(node_path)
-        wedge = self.tableWidget.pictures.wedgeList()
+        wedge = list(self.tableWidget.pictures.wedgeList())
+        print list(wedge)
         
         for i in range(len(self.tableWidget.pictures)):
             takeName = 'wedge' + str(i+1)
 
-            curTake = hou.takes.rootTake()
+            curTake = hou.takes.findTake('Main')
             takeName = curTake.addChildTake(takeName)
             hou.takes.setCurrentTake(takeName)
 
             for j in range(self.tableWidget.pictures.wedgeAmount()):
                 name = 'name' + str(j+1)
                 parm = wedge_node.parm(name).eval()
+                print parm
                 for n in range(len(wedge)):
-                    print wedge[n]
                     if wedge[n] == parm: 
                         chan = 'chan' + str(j+1)
                         path = wedge_node.parm(chan).eval()
                         modifiedParm = hou.parm(path)
                         takeName.addParmTuple(modifiedParm.tuple())
-                        modifiedParm.set(self.tableWidget.pictures.wedgeVal(i,j))
-                        print path
-                        print (self.tableWidget.pictures.wedgeVal(i,j))
-
-            hou.takes.setCurrentTake(hou.takes.rootTake())            
+                        val = self.tableWidget.pictures.wedgeVal(i,j)
+                        
+                        if modifiedParm.parmTemplate().type() == hou.parmTemplateType.Float:
+                            val = float(val)
+                        elif modifiedParm.parmTemplate().type() == hou.parmTemplateType.Int:
+                            val = int(float(val))
+                        elif modifiedParm.parmTemplate().type() == hou.parmTemplateType.String:
+                            val = str(val)
+                        else: pass
+                        modifiedParm.set(val)
+                        
+            hou.takes.setCurrentTake(hou.takes.findTake('Main'))            
+    
 
 
 #TABLE VIEWER DEFINE
