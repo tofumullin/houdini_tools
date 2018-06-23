@@ -3,7 +3,25 @@ import platform, os, os.path
 from PySide2.QtCore import *
 from PySide2.QtGui import *
 from PySide2.QtWidgets import *
-
+  
+def convertFiles(filelist, imageFormat='jpg' ):
+        files = []
+        for i in range(len(filelist)):
+            print i
+            print filelist[i]
+            getFileInfo = QFileInfo(filelist[i])
+            outputFile = getFileInfo.absolutePath() + '/' + getFileInfo.completeBaseName() + '.' + imageFormat
+            
+            if QFileInfo(outputFile).exists():
+                files.append(outputFile)
+                
+            elif getFileInfo.suffix() in ['jpg','exr','pic','png','rat']:
+                command = 'iconvert '+ filelist[i] +' '+ outputFile
+                os.system(command)
+                files.append(outputFile)
+            else :pass
+        
+        return files
 
 class Ui_MainWindow(QWidget):
     def __init__(self, parent=None):
@@ -266,10 +284,10 @@ class Ui_MainWindow(QWidget):
         files, _ = QFileDialog.getOpenFileNames(self.btn_addPic ,
                                     "Select one or more files to open",
                                     "/home",
-                                    "Images (*.png *.xpm *.jpg *.jpeg)")
+                                    "Images (*.png *.xpm *.jpg *.jpeg *.exr *.pic *.rat)")
 
         if files:
-            
+            files = convertFiles(files) 
             self.tableWidget.clear()
             self.tableWidget.initUI(files,self.comboBox_sort.currentIndex())
             self.tableWidget.listview()
@@ -280,11 +298,11 @@ class Ui_MainWindow(QWidget):
         files, _ = QFileDialog.getOpenFileNames(self.btn_appPic ,
                                     "Select one or more files to open",
                                     "/home",
-                                    "Images (*.png *.xpm *.jpg *.jpeg)")
+                                    "Images (*.png *.xpm *.jpg *.jpeg *.exr *.pic *.rat)")
         
         if files:
             newfiles = self.oldfiles
-            
+            files = convertFiles(files) 
             for file in files:
                 if file not in self.oldfiles:
                     newfiles.append(file)
@@ -402,7 +420,7 @@ class TableWidget(QTableWidget):
 
     def dropEvent(self, event):
         files = [(u.toLocalFile()) for u in event.mimeData().urls()]
-        # files = convertFiles(files)
+        files = convertFiles(files)
         if files:
             self.initUI(files)
             self.listview()
@@ -661,8 +679,6 @@ class ImageView(QMainWindow):
         self.resize(pixmap.width(), pixmap.height())
         # self.label.adjustSize()
         self.show()
-
-
 
 '''
 if __name__ == "__main__":
